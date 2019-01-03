@@ -14,10 +14,10 @@ rootProject.name = 'benchmarks'
 includeBuild("plugin") {
     dependencySubstitution {
         substitute module('org.jetbrains.gradle.benchmarks:org.jetbrains.gradle.benchmarks.gradle.plugin') with project(':')
+        substitute module('org.jetbrains.gradle.benchmarks:runtime') with project(':runtime')
     }
 }
 
 include "examples/kotlin"
 include "examples/kotlin-multiplatform"
 include "examples/kotlin-kts"
-include "runtime"
