@@ -74,6 +74,7 @@ kotlin {
 //        }
 
         nativeMain {
+        	dependsOn(commonMain)
             dependencies {
             }
         }
