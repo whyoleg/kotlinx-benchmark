@@ -8,11 +8,13 @@ import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.konan.util.*
 import org.jetbrains.kotlin.builtins.*
+import org.jetbrains.kotlin.konan.library.KLIB_INTEROP_IR_PROVIDER_IDENTIFIER
 import org.jetbrains.kotlin.serialization.konan.*
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.util.Logger
 import org.jetbrains.kotlin.library.*
 import org.jetbrains.kotlin.library.impl.*
+import org.jetbrains.kotlin.library.metadata.NullFlexibleTypeDeserializer
 import org.jetbrains.kotlin.library.resolver.impl.*
 import java.io.*
 import javax.inject.*
@@ -134,8 +136,12 @@ class NativeSourceGeneratorWorker
         logger: Logger
     ) : KotlinLibraryProperResolverWithAttributes<KotlinLibrary>(
         emptyList(), klibFiles, knownAbiVersions, emptyList(),
-        null, null, false, logger, emptyList()
+        null, null, false, logger, listOf(KLIB_INTEROP_IR_PROVIDER_IDENTIFIER)
     ) {
-        override fun libraryBuilder(file: org.jetbrains.kotlin.konan.file.File, isDefault: Boolean) = createKotlinLibrary(file, isDefault)
+        override fun libraryComponentBuilder(
+            file: org.jetbrains.kotlin.konan.file.File,
+            isDefault: Boolean
+        ): List<KotlinLibrary> =
+            createKotlinLibraryComponents(file, isDefault)
     }
 }
