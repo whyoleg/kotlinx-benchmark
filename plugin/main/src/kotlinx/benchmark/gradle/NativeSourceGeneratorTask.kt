@@ -1,23 +1,27 @@
 package kotlinx.benchmark.gradle
 
-import org.gradle.api.*
-import org.gradle.api.file.*
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.*
-import org.gradle.workers.*
-import org.jetbrains.kotlin.config.*
-import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.konan.util.*
-import org.jetbrains.kotlin.builtins.*
+import org.gradle.workers.IsolationMode
+import org.gradle.workers.WorkerExecutor
+import org.jetbrains.kotlin.builtins.DefaultBuiltIns
+import org.jetbrains.kotlin.config.ApiVersion
+import org.jetbrains.kotlin.config.LanguageVersion
+import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
+import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.konan.library.KLIB_INTEROP_IR_PROVIDER_IDENTIFIER
-import org.jetbrains.kotlin.serialization.konan.*
+import org.jetbrains.kotlin.konan.util.KlibMetadataFactories
+import org.jetbrains.kotlin.library.*
+import org.jetbrains.kotlin.library.impl.createKotlinLibrary
+import org.jetbrains.kotlin.library.impl.createKotlinLibraryComponents
+import org.jetbrains.kotlin.library.metadata.NullFlexibleTypeDeserializer
+import org.jetbrains.kotlin.library.resolver.impl.libraryResolver
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.util.Logger
-import org.jetbrains.kotlin.library.*
-import org.jetbrains.kotlin.library.impl.*
-import org.jetbrains.kotlin.library.metadata.NullFlexibleTypeDeserializer
-import org.jetbrains.kotlin.library.resolver.impl.*
-import java.io.*
-import javax.inject.*
+import java.io.File
+import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
 @CacheableTask
@@ -113,14 +117,23 @@ class NativeSourceGeneratorWorker
         val versionSpec = LanguageVersionSettingsImpl(LanguageVersion.LATEST_STABLE, ApiVersion.LATEST_STABLE)
         val storageManager = LockBasedStorageManager("Inspect")
 
-        val module = factory.createDescriptorOptionalBuiltIns(library, versionSpec, storageManager, Builtins, null)
+        val module = factory.createDescriptorOptionalBuiltIns(
+            library,
+            versionSpec,
+            storageManager,
+            Builtins,
+            null,
+            LookupTracker.DO_NOTHING
+        )
 
         val dependencies = libraryResolver.resolveWithDependencies(library.unresolvedDependencies)
         val dependenciesResolved = NativeFactories.DefaultResolvedDescriptorsFactory.createResolved(
             dependencies,
             storageManager,
             Builtins,
-            versionSpec
+            versionSpec,
+            null,
+            emptyList()
         )
 
         val dependenciesDescriptors = dependenciesResolved.resolvedDescriptors
