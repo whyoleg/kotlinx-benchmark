@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.konan.library.KLIB_INTEROP_IR_PROVIDER_IDENTIFIER
 import org.jetbrains.kotlin.konan.util.KlibMetadataFactories
 import org.jetbrains.kotlin.library.*
-import org.jetbrains.kotlin.library.impl.createKotlinLibrary
 import org.jetbrains.kotlin.library.impl.createKotlinLibraryComponents
 import org.jetbrains.kotlin.library.metadata.NullFlexibleTypeDeserializer
 import org.jetbrains.kotlin.library.resolver.impl.libraryResolver
@@ -112,7 +111,7 @@ class NativeSourceGeneratorWorker
         val factory = NativeFactories.DefaultDeserializedDescriptorFactory
 
         val konanFile = org.jetbrains.kotlin.konan.file.File(lib.canonicalPath)
-        val library = createKotlinLibrary(konanFile)
+        val library = resolveSingleFileKlib(konanFile)
 
         val versionSpec = LanguageVersionSettingsImpl(LanguageVersion.LATEST_STABLE, ApiVersion.LATEST_STABLE)
         val storageManager = LockBasedStorageManager("Inspect")
