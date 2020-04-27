@@ -24,11 +24,11 @@ kotlin {
         }
     }
 
-//    js {
-//        // nodejs {
-//
-//        // }
-//    }
+    js {
+         nodejs {
+
+         }
+    }
 
     sourceSets.all {
         languageSettings {
@@ -62,16 +62,16 @@ kotlin {
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
             }
         }
-//        jsMain {
-//            dependencies {
-//                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
-//            }
-//        }
-//        jsTest {
-//            dependencies {
-//                implementation 'org.jetbrains.kotlin:kotlin-test-js'
-//            }
-//        }
+        jsMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-js'
+            }
+        }
 
         nativeMain {
         	dependsOn(commonMain)
