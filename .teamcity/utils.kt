@@ -4,6 +4,7 @@
  */
 
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
+import java.lang.IllegalStateException
 
 const val versionSuffixParameter = "versionSuffix"
 const val teamcitySuffixParameter = "teamcitySuffix"
@@ -40,7 +41,11 @@ const val DEPLOY_PUBLISH_ID = "Deploy_Publish"
 class KnownBuilds(private val project: Project) {
     private fun buildWithId(id: String): BuildType {
         val fullId = "RootProjectId_$id"
-        return project.buildTypes.single { it.id.toString() == fullId }
+        val build = project.buildTypes.singleOrNull { it.id.toString() == fullId }
+        if (build == null) {
+            throw IllegalStateException("Build with id $fullId not found. Existing build ids: ${project.buildTypes.map { it.id.toString() }}")
+        }
+        return build
     }
 
     val buildVersion: BuildType get() = buildWithId(BUILD_CONFIGURE_VERSION_ID)
