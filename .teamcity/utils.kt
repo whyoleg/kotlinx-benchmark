@@ -40,7 +40,7 @@ const val DEPLOY_PUBLISH_ID = "Deploy_Publish"
 
 class KnownBuilds(private val project: Project) {
     private fun buildWithId(id: String): BuildType {
-        val fullId = "${project.id}_$id"
+        val fullId = "${project.uuid}_$id"
         val build = project.buildTypes.singleOrNull { it.id.toString() == fullId }
         if (build == null) {
             throw IllegalStateException("Build with id $fullId not found. Existing build ids: ${project.buildTypes.map { it.id.toString() }}")
