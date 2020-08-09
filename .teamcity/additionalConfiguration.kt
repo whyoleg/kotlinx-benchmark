@@ -8,6 +8,7 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.GradleBuildStep
 
 fun Project.additionalConfiguration() {
     platforms.forEach { platform ->
+        println("additionalConfiguration for $platform")
         val gradleBuild = knownBuilds.buildOn(platform).steps.items.single() as GradleBuildStep
         gradleBuild.tasks += " " + fastBenchmarkTasks(platform)
     }
