@@ -10,6 +10,7 @@ const val versionSuffixParameter = "versionSuffix"
 const val teamcitySuffixParameter = "teamcitySuffix"
 const val releaseVersionParameter = "releaseVersion"
 
+const val rootProjectId = "KotlinTools_KotlinxBenchmark"
 const val bintrayUserName = "orangy"
 const val bintrayToken = "credentialsJSON:9a48193c-d16d-46c7-8751-2fb434b09e07"
 
@@ -40,10 +41,9 @@ const val DEPLOY_PUBLISH_ID = "Deploy_Publish"
 
 class KnownBuilds(private val project: Project) {
     private fun buildWithId(id: String): BuildType {
-        val fullId = "%teamcity.project.id%_$id"
-        val build = project.buildTypes.singleOrNull { it.id.toString() == fullId }
+        val build = project.buildTypes.singleOrNull { it.id.toString().endsWith(id) }
         if (build == null) {
-            throw IllegalStateException("Build with id $fullId not found. Existing build ids: ${project.buildTypes.map { it.id.toString() }}")
+            throw IllegalStateException("Build with id $id not found. Existing build ids: ${project.buildTypes.map { it.id.toString() }}")
         }
         return build
     }
