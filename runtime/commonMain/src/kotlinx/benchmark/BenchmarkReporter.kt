@@ -17,6 +17,7 @@ fun formatJson(results: Collection<ReportBenchmarkResult>) =
             "\"${it.key}\" : \"${it.value}\""
         }}
     },
+    "iterationMode" : "${result.config.iterationMode.toText()}",
     "primaryMetric" : {
        "score": ${result.score},
        "scoreError": ${result.error},
