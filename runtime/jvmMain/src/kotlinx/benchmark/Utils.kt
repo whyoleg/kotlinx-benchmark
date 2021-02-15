@@ -13,6 +13,6 @@ actual fun saveReport(reportFile: String?, results: Collection<ReportBenchmarkRe
     File(reportFile).writeText(formatJson(results))
 }
 
-actual fun String.readConfigFile(): String {
+actual fun String.readFile(): String {
     return File(this).readText()
 }

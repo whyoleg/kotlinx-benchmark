@@ -2,9 +2,8 @@ package kotlinx.benchmark
 
 expect fun saveReport(reportFile: String?, results: Collection<ReportBenchmarkResult>)
 
-fun formatJson(results: Collection<ReportBenchmarkResult>) =
-    results.joinToString(",", prefix = "[", postfix = "\n]") { result ->
-        """
+fun formatJson(result: ReportBenchmarkResult) =
+    """
   {
     "benchmark" : "${result.benchmark.name}",
     "mode" : "${result.config.mode.toText()}",
@@ -14,8 +13,8 @@ fun formatJson(results: Collection<ReportBenchmarkResult>) =
     "measurementTime" : "${result.config.iterationTime} ${result.config.iterationTimeUnit.toText()}",
     "params" : {
           ${result.params.entries.joinToString(separator = ",\n          ") {
-            "\"${it.key}\" : \"${it.value}\""
-        }}
+    "\"${it.key}\" : \"${it.value}\""
+}}
     },
     "iterationMode" : "${result.config.iterationMode.toText()}",
     "primaryMetric" : {
@@ -27,19 +26,23 @@ fun formatJson(results: Collection<ReportBenchmarkResult>) =
        ],
        "scorePercentiles" : {
           ${result.percentiles.entries.joinToString(separator = ",\n          ") {
-            "\"${it.key.format(2)}\" : ${it.value}"
-        }}
+    "\"${it.key.format(2)}\" : ${it.value}"
+}}
        },
        "scoreUnit" : "${unitText(result.config.mode, result.config.outputTimeUnit)}",
        "rawData" : [
            ${result.values.joinToString(
-            prefix = "[\n             ",
-            postfix = "\n           ]",
-            separator = ",\n             "
-        )}
+    prefix = "[\n             ",
+    postfix = "\n           ]",
+    separator = ",\n             "
+)}
        ]
     },
     "secondaryMetrics" : {
     }
   }"""
+
+fun formatJson(results: Collection<ReportBenchmarkResult>) =
+    results.joinToString(",", prefix = "[", postfix = "\n]") { result ->
+        formatJson(result)
     }

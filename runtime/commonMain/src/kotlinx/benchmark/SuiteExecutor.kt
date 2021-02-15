@@ -1,7 +1,9 @@
 package kotlinx.benchmark
 
 abstract class SuiteExecutor(val executionName: String, arguments: Array<out String>) {
-    private val config = RunnerConfiguration(arguments.first().readConfigFile())
+    private val config = RunnerConfiguration(arguments.first().readFile())
+
+    protected val additionalArguments = arguments.drop(1)
 
     val reporter = BenchmarkProgress.create(config.traceFormat)
 
@@ -15,7 +17,6 @@ abstract class SuiteExecutor(val executionName: String, arguments: Array<out Str
 
     fun run() {
         //println(config.toString())
-        reporter.startSuite(executionName)
         val include = if (config.include.isEmpty())
             listOf(Regex(".*"))
         else
@@ -31,7 +32,7 @@ abstract class SuiteExecutor(val executionName: String, arguments: Array<out Str
                 } as List<BenchmarkDescriptor<Any?>>
         }
 
-        run(config, reporter, benchmarks) {
+        run(config, reporter, benchmarks, { reporter.startSuite(executionName) }) {
             reporter.endSuite(executionName)
             saveReport(config.reportFile, results)
         }
@@ -45,6 +46,7 @@ abstract class SuiteExecutor(val executionName: String, arguments: Array<out Str
         runnerConfiguration: RunnerConfiguration,
         reporter: BenchmarkProgress,
         benchmarks: List<BenchmarkDescriptor<Any?>>,
+        start: () -> Unit,
         complete: () -> Unit
     )
 
